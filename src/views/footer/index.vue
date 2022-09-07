@@ -1,5 +1,5 @@
 <template>
-  <div class="container-footer">@cuukenn 2022 - &infin; &nbsp;&nbsp; &nbsp; changgg的个人网址导航</div>
+  <div class="container-footer">&copy;cuukenn 2022 - &infin; &nbsp;&nbsp; &nbsp; changgg的个人网址导航</div>
 </template>
 <script lang="ts" setup></script>
 <style scoped>
