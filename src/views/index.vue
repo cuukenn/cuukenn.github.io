@@ -119,10 +119,10 @@ const particlesInit = async (engine: Engine) => {
 }
 @keyframes background-fade {
   70% {
-    background-color: rgba(76, 107, 108, 0.4);
+    background-color: rgba(0, 0, 0, 0);
   }
   100% {
-    background-color: rgba(76, 107, 108, 0.7);
+    background-color: rgba(0, 0, 0, 0.7);
   }
 }
 .header {
