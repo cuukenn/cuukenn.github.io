@@ -3,7 +3,9 @@
     <div class="item-mask"></div>
     <div class="item-layout">
       <header>
-        <p>{{ name ? name : 'TODO' }}</p>
+        <p style="font-size: 26px; color: aquamarine">
+          {{ name ? name : 'TODO' }}
+        </p>
       </header>
       <main>
         <div class="item-btn" @click.stop="navigateToUrl(url)">点击进入</div>
@@ -84,11 +86,12 @@ main {
 .item-btn {
   height: 30px;
   border: 1px solid #fff;
-  color: #fff;
+  color: whitesmoke;
   text-align: center;
   line-height: 28px;
   display: block;
   display: none;
+  font-size: 20px;
 }
 .item-container:hover .item-btn {
   display: block;
