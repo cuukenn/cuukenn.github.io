@@ -101,7 +101,6 @@ const requestAnimationFrameAction = () => {
       }
     }
   }
-  console.log(autoRunFlag.value)
   if (autoRunFlag.value == 0) {
     moveForMouseOut()
   } else {
