@@ -1,16 +1,19 @@
 <template>
-  <div class="gallery-main">
-    <div ref="GalleryContainerRef" class="gallery-container" :style="{ left: left + 'px' }">
-      <gallery-item
-        v-for="(item, index) in items"
-        :key="index"
-        :url="item.url"
-        :src="item.src"
-        :name="item.name"
-        @mouseover="() => (flag = true)"
-        @mouseout="() => (flag = false)"
-      ></gallery-item>
-    </div>
+  <div ref="GalleryMainRef" class="gallery-main">
+    <header ref="GalleryHeaderRef" @mouseenter.stop="parantMousIn" @mouseleave.stop="parantMousOut"></header>
+    <main>
+      <div ref="GalleryContainerRef" class="gallery-container" :style="{ left: left + 'px' }">
+        <gallery-item
+          v-for="(item, index) in items"
+          :key="index"
+          :url="item.url"
+          :src="item.src"
+          :name="item.name"
+          @mouseenter.stop="childMousIn"
+          @mouseleave="childMousOut"
+        ></gallery-item>
+      </div>
+    </main>
   </div>
 </template>
 <script lang="ts" setup>
@@ -26,76 +29,118 @@ const props = defineProps({
 })
 const left = ref(0)
 const GalleryContainerRef = ref()
-let moveStep = 0
-let lastMoveSetp = moveStep
-let maxLeft = 0
-let minLeft = 0
+const GalleryMainRef = ref()
+const GalleryHeaderRef = ref()
+//0:auto,1:mouse,2:stop
+const autoRunFlag = ref(0)
+let galleryWidth: number, mainWidth: number, eachItemWidth: number
+let rafId: any, finished: boolean, currentIndex: number, isLeft: boolean
+const offsetLefts: Array<number> = []
+const parantMousIn = () => {
+  autoRunFlag.value = 1
+}
+const parantMousOut = () => {
+  autoRunFlag.value = 0
+}
+const childMousIn = () => {
+  autoRunFlag.value = 2
+}
+const childMousOut = () => {
+  autoRunFlag.value = 0
+}
+//鼠标移动检测函数
 const mouseMoveTrigger = (e: any) => {
-  const leftInstance = e.screenX
-  const screenWidth = window.innerWidth
-  lastMoveSetp = moveStep
-  if (leftInstance < screenWidth / 2) {
-    moveStep = 8
-  } else {
-    moveStep = -8
+  const leftInstance = e.layerX
+  //更新位置
+  const fn = (x: number) => {
+    const percent = x / mainWidth
+    const widthTmp = galleryWidth * percent
+    currentIndex = Math.floor(widthTmp / eachItemWidth)
   }
-  if (changePositionId != undefined && lastMoveSetp === moveStep) {
+  fn(leftInstance)
+}
+//计算各个子项居中的偏移值
+const initOffsetLefts = (width: number, eachWidth: number) => {
+  if (props.items === undefined) {
     return
   }
-  changePosition()
+  const len = props.items.length
+  offsetLefts[0] = (width - eachWidth) >> 1
+  for (let i = 1; i < len; i++) {
+    offsetLefts[i] = offsetLefts[i - 1] - eachWidth
+  }
 }
-let changePositionId: any
-const changePosition = () => {
-  changePositionId = requestAnimationFrame(function fn() {
-    if (flag.value) {
-      clearTimeout(changePositionId)
-      changePositionId = undefined
-      return
+//移动offset
+const requestAnimationFrameAction = () => {
+  //当需要进行位置调整时
+  const move = (step: number) => {
+    const exceptedOffset = offsetLefts[currentIndex]
+    if (left.value > exceptedOffset) {
+      if (left.value - step > exceptedOffset) {
+        left.value = left.value - step
+      }
+    } else if (left.value < exceptedOffset) {
+      left.value = left.value + step
+      if (left.value + step < exceptedOffset) {
+        left.value = left.value + step
+      }
     }
-    if (moveStep !== 0) {
-      if (left.value < minLeft && moveStep < 0) {
-        clearTimeout(changePositionId)
-        changePositionId = undefined
-        return
-      } else if (left.value > maxLeft && moveStep > 0) {
-        clearTimeout(changePositionId)
-        changePositionId = undefined
-        return
-      } else {
-        left.value += moveStep
+  }
+  //自动滚动
+  const moveForMouseOut = () => {
+    const step = 4
+    if (!isLeft && left.value <= offsetLefts[0]) {
+      left.value += step
+      if (left.value >= offsetLefts[0]) {
+        isLeft = true
       }
     } else {
-      clearTimeout(changePositionId)
-      changePositionId = undefined
+      left.value -= step
+      if (left.value <= offsetLefts[offsetLefts.length - 1]) {
+        isLeft = false
+      }
     }
-    changePositionId = requestAnimationFrame(fn)
-  })
+  }
+  console.log(autoRunFlag.value)
+  if (autoRunFlag.value == 0) {
+    moveForMouseOut()
+  } else {
+    if (autoRunFlag.value === 1) {
+      //鼠标滑动控制
+      move(16)
+    }
+  }
+  if (finished) {
+    //不再需要动画，直接退出
+    return
+  }
+  rafId = requestAnimationFrame(requestAnimationFrameAction)
 }
-const flag = ref(false)
 onMounted(() => {
-  const div = GalleryContainerRef.value
-  const galleryWidth = div.style.width || div.clientWidth || div.offsetWidth || div.scrollWidth
+  const getWidth = (div: any) => {
+    return div.style.width || div.clientWidth || div.offsetWidth || div.scrollWidth
+  }
+  galleryWidth = getWidth(GalleryContainerRef.value)
+  mainWidth = getWidth(GalleryMainRef.value)
   const itemSize = props.items != undefined ? props.items.length : 0
   if (itemSize <= 0) {
     return
   }
   //计算每个子项的宽度、从而计算合适的最大最小偏移位置
-  const eachItem = galleryWidth / itemSize
-  const eachItemHalf = eachItem >> 1
-  //设置左右移动距离
-  minLeft = -1 * (galleryWidth - document.body.clientWidth + eachItemHalf)
-  maxLeft = eachItemHalf
-  window.addEventListener('mousemove', mouseMoveTrigger)
+  eachItemWidth = galleryWidth / itemSize
+  requestAnimationFrameAction()
+  initOffsetLefts(mainWidth, eachItemWidth)
+  GalleryHeaderRef.value.addEventListener('mousemove', mouseMoveTrigger)
 })
 onUnmounted(() => {
-  window.removeEventListener('mousemove', mouseMoveTrigger)
+  GalleryHeaderRef.value.removeEventListener('mousemove', mouseMoveTrigger)
+  finished = true
 })
 </script>
 <style scoped>
 .gallery-main {
-  width: 98%;
+  width: 100%;
   height: 100%;
-  margin: 0 1%;
   display: flex;
   align-items: center;
   justify-items: center;
@@ -107,5 +152,20 @@ onUnmounted(() => {
   height: 260px;
   margin: 0 1%;
   position: absolute;
+}
+/* 内容布局 */
+.gallery-main {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+.gallery-main > header {
+  height: 20%;
+  flex-shrink: 0;
+  width: 100%;
+}
+.gallery-main > main {
+  flex-grow: 2;
 }
 </style>
