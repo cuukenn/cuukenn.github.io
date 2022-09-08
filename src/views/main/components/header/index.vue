@@ -75,4 +75,8 @@ footer {
 .item-layout > footer {
   width: max-content;
 }
+/* 头像位置下移 */
+.item-layout > header {
+  margin-top: 50%;
+}
 </style>

@@ -93,6 +93,9 @@ main {
   display: none;
   font-size: 20px;
 }
+.item-container:hover {
+  background-size: 140%;
+}
 .item-container:hover .item-btn {
   display: block;
   z-index: 999;
