@@ -1,16 +1,59 @@
-# Vue 3 + TypeScript + Vite
+#### 个人网址导航站
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+- 描述
+  
+  个人网址入口静态导航站，展示相关个人网址
 
-## Recommended IDE Setup
+- 技术栈
+  
+  - typescript,vue3,yarn,vite
+  - vue3-particles
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+- 环境
+  
+  - 安装 npm：
+    
+    - [node 环境安装（必选）](https://www.runoob.com/nodejs/nodejs-install-setup.html)
+    - [node 版本管理器安装（可选）](https://www.runoob.com/w3cnote/npm-switch-repo.html)
+  
+  - 安装 yarn
+    
+    ```
+    npm install -g yarn
+    ```
+  
+  - 安装依赖
+    
+    ```shell
+    yarn install
+    ```
 
-## Type Support For `.vue` Imports in TS
+- 启动
+  
+  ```shell
+  yarn dev
+  ```
+  
+  访问地址：[http://127.0.0.1:5173](http://127.0.0.1:5173)
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
-
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
-
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+- 部署
+  
+  - 编译
+    
+    ```shell
+    yarn build
+    ```
+  
+  - 静态托管
+    
+    - [github pages](https://cuukenn.github.io)
+      
+      ```shell
+      yarn deploy:github
+      ```
+    
+    - [gitee pages](https://cuukenn.gitee.io)
+      
+      ```shell
+      yarn deploy:gitee
+      ```
