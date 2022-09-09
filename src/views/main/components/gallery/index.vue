@@ -89,14 +89,14 @@ const requestAnimationFrameAction = () => {
   //自动滚动
   const moveForMouseOut = () => {
     const step = 4
-    if (!isLeft && left.value <= offsetLefts[0]) {
+    if (!isLeft && left.value <= offsetLefts[1]) {
       left.value += step
       if (left.value >= offsetLefts[0]) {
         isLeft = true
       }
     } else {
       left.value -= step
-      if (left.value <= offsetLefts[offsetLefts.length - 1]) {
+      if (left.value <= offsetLefts[offsetLefts.length - 2]) {
         isLeft = false
       }
     }

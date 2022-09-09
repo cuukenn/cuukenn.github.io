@@ -39,14 +39,14 @@ const options = {
     },
     modes: {
       bubble: {
-        distance: 400,
+        distance: 800,
         duration: 2,
         opacity: 0.8,
-        size: 40,
-        speed: 3,
+        size: 10,
+        speed: 1,
       },
       push: {
-        quantity: 4,
+        quantity: 8,
       },
       repulse: {
         distance: 200,
@@ -73,15 +73,15 @@ const options = {
       enable: true,
       outMode: 'bounce',
       random: false,
-      speed: 6,
+      speed: 3,
       straight: false,
     },
     number: {
       density: {
         enable: true,
-        value_area: 800,
+        value_area: 600,
       },
-      value: 80,
+      value: 60,
     },
     opacity: {
       value: 0.5,
